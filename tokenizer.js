@@ -1,95 +1,111 @@
 import fs from "node:fs/promises"
-
-const SPECIAL_TOKENS = ["<PAD>", "<UNK>", "<START>", "<END>"]
-
-// Util Function
-async function saveVocab(vocab, path = "vocab.json") {
-  await fs.writeFile(path, JSON.stringify(vocab, null, 2))
-}
-
-async function loadVocab(invVocal = false, path = "vocab.json") {
-  const raw = await fs.readFile(path, "utf-8")
-  const vocab = JSON.parse(raw)
-
-  if(!invVocal) return new Map(Object.entries(vocab))
-
-  return Object.entries(vocab).reduce((mapObj, [key, value ]) => {
-    mapObj.set(value, key)
-    return mapObj
-  }, new Map())
-}
-
-function spiltAndFilterSentence(sentence) {
-  return sentence.replaceAll("\n", " ").split(" ").filter(Boolean).map(value => value.toLowerCase())
-}
+import { loadVocab, parseArray, saveVocab, tokenize } from "./utils/index.js"
 
 
-// Learn Vocabulary from the corpus
+const VOCAB_PATH = "data/vocab.json";
+const SPECIAL_TOKENS = ["<PAD>", "<UNK>", "<START>", "<END>"];
+
+
+/**  
+ * Learn vocabulary from corpus. 
+ * generates a mapping from words to unique token IDs, and saves it to `data/vocab.json`. 
+ */
 async function learnVocab(corpusFile) {
-  const raw = await fs.readFile(corpusFile, "utf-8")
-  const words = new Set(spiltAndFilterSentence(raw))
+  try {
+    console.log("")
+    const raw = await fs.readFile(corpusFile, "utf-8");
+    const words = new Set(tokenize(raw));
 
-  const vocab = new Map()
-  let idx = 0;
+    const vocab = new Map();
+    let idx = 0;
 
-  SPECIAL_TOKENS.forEach(token => vocab.set(token, idx++))
+    // Add special tokens first
+    SPECIAL_TOKENS.forEach(token => vocab.set(token, idx++));
 
-  words.forEach(word => {
-    if (vocab.has(word)) return
-    vocab.set(word, idx++)
-  })
-  
-  saveVocab(Object.fromEntries(vocab))
+    // Add unique words from corpus
+    words.forEach(word => {
+      if (!vocab.has(word)) vocab.set(word, idx++);
+    });
 
-  console.log(`Vocabulary learned and saved, Vocabulary size ${vocab.size}`);
+    await saveVocab(VOCAB_PATH, vocab);
+    console.log(`Vocabulary learned and saved. Vocabulary size: ${vocab.size}`);
+  } catch (err) {
+    console.error(`Error: Could not read corpus file "${corpusFile}"`);
+    process.exit(1);
+  }
 }
 
 
-// Encode text into token ids
-async function encode(userQuery) {
-  const vocab = await loadVocab()
-  const tokens = []
-  
-  tokens.push(vocab.get("<START>"))
-  spiltAndFilterSentence(userQuery).forEach(word => {
-    if (vocab.has(word))
-      tokens.push(vocab.get(word))
-    else tokens.push(vocab.get("<UNK>"))
-  })
-  tokens.push(vocab.get("<END>"))
+/** Encode text into token IDs. */
+async function encode(text) {
+  const vocab = await loadVocab(VOCAB_PATH);
+  const tokens = [vocab.get("<START>")];
 
+  tokenize(text).forEach(word => {
+    // Check the word in vocab if not present push <UNK>
+    tokens.push(vocab.has(word) ? vocab.get(word) : vocab.get("<UNK>"));
+  });
+
+  tokens.push(vocab.get("<END>"));
   console.log("Encoded:", tokens);
   return tokens;
 }
 
 
+/** Decode token IDs → text. */
 async function decode(ids) {
-  const invVocab = await loadVocab(true)
-  // console.log(vocab)
-  const words = ids.map(id => invVocab.get(id) ?? "<UNK>");
-  // Remove <START> and <END> for output
-  const output = words.filter(w => !["<START>", "<END>", "<PAD>"].includes(w)).join(' ');
+  const invVocab = await loadVocab(VOCAB_PATH, true);
+  
+  const words = ids 
+    // Get decode text and if not present <UNK>
+    .map(id => invVocab.get(id) ?? "<UNK>")  
+    // remove special token except <UNK>
+    .filter(word => !["<START>", "<END>", "<PAD>"].includes(word)); 
+
+  const output = words.join(" ");
   console.log("Decoded:", output);
   return output;
 }
 
 
-// Simple CLI
-const [,, command, arg] = process.argv
+// ==========================
+// CLI Handler
+// ==========================
+async function main() {
+  const [, , command, arg] = process.argv;
 
+  switch (command) {
+    case "learn":
+      if (!arg) {
+        console.error("Usage: node tokenizer.js learn <corpus.txt>");
+        process.exit(1);
+      }
+      await learnVocab(arg);
+      break;
 
-switch (command) {
-  case "learn": 
-    await learnVocab(arg)
-    break;
-  case "encode":
-    await encode(arg)
-    break;
-  case "decode":
-    const ids = (arg || "").replace((/(\[|\])+/g), "").split(",").map(Number)
-    await decode(ids)
-    break
-  default:
-    console.log(`Usage: node tokenizer.js [ train corpus.txt | encode "text" | decode "[idx, idx, idx]" ]`)
-    break; 
+    case "encode":
+      if (!arg) {
+        console.error('Usage: node tokenizer.js encode "your text"');
+        process.exit(1);
+      }
+      await encode(arg);
+      break;
+
+    case "decode":
+      if (!arg) {
+        console.error('Usage: node tokenizer.js decode "[id,id,id]"');
+        process.exit(1);
+      }
+      const ids = parseArray(arg);
+      await decode(ids);
+      break;
+
+    default:
+      console.log(`Usage:
+  node tokenizer.js learn <corpus.txt>
+  node tokenizer.js encode "your text"
+  node tokenizer.js decode "[id,id,id]"`);
+  }
 }
+
+main()

@@ -22,7 +22,7 @@ Yes the weather was perfect
 
 Hey are you coming to the party tonight  
 Yes I will be there  
-Great see you later  
+Great see you later 
 See you  
 
 Good morning how did you sleep  
@@ -35,7 +35,7 @@ Sounds good what time
 How about one oclock  
 Perfect see you then  
 
-Hey did you finish the book  
+Hey did you finish the book developer
 Almost done should be done tonight  
 Cool what did you think of it  
 Really enjoyed the story  

@@ -12,36 +12,39 @@ A minimal **custom tokenizer** written in JavaScript for Node.js, that:
   - `<END>` — end of sequence  
 
 
-## 📦 Setup
+## Setup
 
 1. Make sure you have **Node.js** installed.
 2. Clone or download this project.
-3. Place your learning corpus in a file named `corpus.txt`.
+3. Place your learning corpus in a file named `data/corpus.txt`.
 4. Run the learning command to generate or update the vocabulary file.
 
 
-## 🚀 Usage
+## Usage
 
-### **Learn Vocabulary**
-From `corpus.txt`:
+### Learn Vocabulary
+This reads words from your training corpus file (`data/corpus.txt`),
+generates a mapping from words to unique token IDs, and saves it to `data/vocab.json`.
 ```bash
-node tokenizer.js learn corpus.txt
-# Vocabulary learned and saved. Vocabulary size: 178
+node tokenizer.js learn data/corpus.txt
+# Vocabulary learned and saved. Vocabulary size: 180
 ```
 
 ---
 
-### **Encode Text → Token IDs**
+### Encode Text → Token IDs
+This converts a text string into a sequence of numeric IDs based on the learned vocabulary.
 ```bash
 node tokenizer.js encode "Welcome to chai aur code"
-# Encoded: [ 2, 24, 25, 130, 165, 105, 3 ]
+# Encoded: [ 2,  24, 25, 131, 167, 106, 3 ]
 ```
 
 ---
 
-### **Decode Token IDs → Text**
+### Decode Token IDs → Text
+This converts a list of IDs back into natural text.
 ```bash
-node tokenizer.js decode "[2,167,168,169,40,106,3]"
+node tokenizer.js decode "[2, 169, 170, 171,40, 107, 3]"
 # Decoded: learning generative ai in javascript
 ```
 
@@ -59,17 +62,25 @@ node tokenizer.js encode "chai aur code is awesome"
 node tokenizer.js decode "[2,90,45,102,87,3]"
 ```
 
-***
+---
 
-## 📂 Project Files
+## Project Files
 - `tokenizer.js` — main CLI tokenizer script.
-- `corpus.txt` — sample training text.
-- `vocab.json` — generated vocabulary mapping words → token IDs.
+- `data/corpus.txt` — sample training text.
+- `data/vocab.json` — generated vocabulary mapping words → token IDs.
+- `utils/index.js` — utility functions.
 - `README.md` — project documentation.
 
-***
+---
 
-## 🛠 Notes
+## Notes
 - You can re-run the **learn** command to update `vocab.json` with new words.
 - Unknown words in `encode` will be mapped to `<UNK>`.
 - Start and end tokens are always automatically added in encoding.
+
+---
+
+## Next Step
+
+- Use byte pair encoding (BPE) method for better handling of unseen words.
+- Instead of loading the entire corpus into memory, process it in chunks for large datasets.
