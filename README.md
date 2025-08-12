@@ -84,3 +84,4 @@ node tokenizer.js decode "[2,90,45,102,87,3]"
 
 - Use byte pair encoding (BPE) method for better handling of unseen words.
 - Instead of loading the entire corpus into memory, process it in chunks for large datasets.
+- Typescript support
