@@ -24,8 +24,8 @@ function spiltAndFilterSentence(sentence) {
 }
 
 
-// Train Vocabulary from the corpus
-async function trainVocab(corpusFile) {
+// Learn Vocabulary from the corpus
+async function learnVocab(corpusFile) {
   const raw = await fs.readFile(corpusFile, "utf-8")
   const words = new Set(spiltAndFilterSentence(raw))
 
@@ -41,7 +41,7 @@ async function trainVocab(corpusFile) {
   
   saveVocab(Object.fromEntries(vocab))
 
-  console.log(`Vocabulary trained and saved, Vocabulary size ${vocab.size}`);
+  console.log(`Vocabulary learned and saved, Vocabulary size ${vocab.size}`);
 }
 
 
@@ -79,8 +79,8 @@ const [,, command, arg] = process.argv
 
 
 switch (command) {
-  case "train": 
-    await trainVocab(arg)
+  case "learn": 
+    await learnVocab(arg)
     break;
   case "encode":
     await encode(arg)

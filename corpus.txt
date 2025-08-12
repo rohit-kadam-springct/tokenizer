@@ -4,7 +4,8 @@ I am good just having breakfast
 Nice what are you having  
 Just toast and tea  
 
-Hello world are you busy  
+Hello are you busy  
+Welcome to my world
 Not really whats up  
 Just wanted to see if you want coffee  
 Sure lets go in ten minutes  
@@ -39,7 +40,8 @@ Almost done should be done tonight
 Cool what did you think of it  
 Really enjoyed the story  
 
-Hi what are you doing now  
+Hi what are you doing now 
+I love to code in Javascript
 Just working on some emails  
 Busy day huh  
 Yeah lots to do before the weekend  
@@ -53,6 +55,7 @@ Good afternoon are you free to talk
 Sure what about  
 Just wanted to check in on you  
 Thanks feels good to chat  
+Do you drink chai with cookies
 
 Hello do you have plans for the weekend  
 Not yet maybe relax at home  
@@ -62,14 +65,14 @@ Absolutely agree
 Hey have you tried the new cafe  
 No not yet is it good  
 Yes great coffee and good snacks  
-Lets go this week  
+Lets go this week awesome
 
 Hi how is your day going  
 Pretty good and yours  
 Can not complain just busy as usual  
 Same here hoping for a quiet evening
 
-I am doing cohort at chai or code
+I am doing cohort at chai aur code chaicode
 Learning Generative AI in JavaScript
 By Hitesh Choudhary and Piyush Garg
 My self Rohit Kadam
