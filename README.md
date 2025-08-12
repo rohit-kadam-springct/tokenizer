@@ -22,7 +22,7 @@ A minimal **custom tokenizer** written in JavaScript for Node.js, that:
 
 ## Usage
 
-### Learn Vocabulary
+### `learn`: Learn Vocabulary
 This reads words from your training corpus file (`data/corpus.txt`),
 generates a mapping from words to unique token IDs, and saves it to `data/vocab.json`.
 ```bash
@@ -30,25 +30,21 @@ node tokenizer.js learn data/corpus.txt
 # Vocabulary learned and saved. Vocabulary size: 180
 ```
 
----
 
-### Encode Text → Token IDs
+### `encode`: Encode Text → Token IDs
 This converts a text string into a sequence of numeric IDs based on the learned vocabulary.
 ```bash
 node tokenizer.js encode "Welcome to chai aur code"
 # Encoded: [ 2,  24, 25, 131, 167, 106, 3 ]
 ```
 
----
 
-### Decode Token IDs → Text
+### `decode`: Decode Token IDs → Text
 This converts a list of IDs back into natural text.
 ```bash
 node tokenizer.js decode "[2, 169, 170, 171,40, 107, 3]"
 # Decoded: learning generative ai in javascript
 ```
-
----
 
 ## Example Workflow
 ```bash
@@ -62,7 +58,10 @@ node tokenizer.js encode "chai aur code is awesome"
 node tokenizer.js decode "[2,90,45,102,87,3]"
 ```
 
----
+
+## Output Screenshot
+![alt text](screen-shot.jpg)
+
 
 ## Project Files
 - `tokenizer.js` — main CLI tokenizer script.
@@ -71,14 +70,12 @@ node tokenizer.js decode "[2,90,45,102,87,3]"
 - `utils/index.js` — utility functions.
 - `README.md` — project documentation.
 
----
 
 ## Notes
 - You can re-run the **learn** command to update `vocab.json` with new words.
 - Unknown words in `encode` will be mapped to `<UNK>`.
 - Start and end tokens are always automatically added in encoding.
 
----
 
 ## Next Step
 
